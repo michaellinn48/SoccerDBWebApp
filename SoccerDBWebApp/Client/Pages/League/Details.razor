@@ -11,22 +11,24 @@
 @if(league != null)
 {
     <div class="container">
-        <div class="card">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
             <div class="card-header d-flex justify-content-between">
                 <span>League Details</span>
             </div>
-            <div class="card-body">
-                <img src="@league.LeagueLogoImage" alt="@league.Name photo" />
-            </div>
-            <div class="card-body">
-                <p class="card-text">Country: @league.Country</p>
-                <p class="card-text">Domestic Tier Level: @league.TierLevel</p>
+            <div class="row">
+                <div class="card-body col-md-6">
+                    <img src="@league.LeagueLogoImage" alt="@league.Name photo" />
+                </div>
+                <div class="card-body col-md-6">
+                    <p class="card-text">Country: @league.Country</p>
+                    <p class="card-text">Domestic Tier Level: @league.TierLevel</p>
+                </div>
             </div>
         </div>
 
         <br />
 
-        <div class="card">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
             <div class="card-header d-flex justify-content-between">
                 <span>Current Clubs</span>
             </div>
@@ -62,10 +64,11 @@
 
         <div class="d-flex justify-content-center mt-3">
             <div class="text-center justify-content-between w-25">
-                <a href=@($"/league/edit/{LeagueId}") class="btn btn-outline-primary">Edit League Details</a>
-                <a href=@($"/league/delete/{LeagueId}") class="btn btn-outline-primary">Delete League</a> 
+                <a href=@($"/league/edit/{LeagueId}") class="btn btn-info">Edit League Details</a>
+                <a href=@($"/league/delete/{LeagueId}") class="btn btn-danger">Delete League</a> 
                 <hr/>
                 <a href="/league">Back to League Index</a>
+                <br />
             </div>
         </div>
     </div>

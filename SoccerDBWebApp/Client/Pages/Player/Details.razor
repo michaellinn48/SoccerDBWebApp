@@ -12,26 +12,29 @@
 {
     <div class="container">
 
-        <div class="card">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
             <div class="card-header d-flex justify-content-between">
                 <span>Personal Details</span>
             </div>
-            <div class="card-body">
-                <img src="@player.PlayerImage" alt="@player.Name photo" style="width: 280px; height: 280px" />
+            <div class="row">
+                <div class="card-body col-md-6">
+                    <img src="@player.PlayerImage" alt="@player.Name photo" style="width: 280px; height: 280px" />
+                </div>
+                <div class="card-body col-md-6">
+                    <p class="card-text">Age: @player.Age</p>
+                    <p class="card-text">Height: @player.Height</p>
+                    <p class="card-text">Positions: @player.Positions</p>
+                </div>
             </div>
-            <div class="card-body">
-                <p class="card-text">Age: @player.Age</p>
-                <p class="card-text">Height: @player.Height</p>
-                <p class="card-text">Positions: @player.Positions</p>
-            </div>
+
         </div>
 
         <br />
 
-        <div class="card">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
             <div class="card-header d-flex justify-content-between">
                 <span>Career History</span>
-            </div>            
+            </div>
             <div class="card-body">
                 @if (player.CareerHistorys != null)
                 {
@@ -52,24 +55,36 @@
                                     <td>@careerHistory.StartYear - @careerHistory.EndYear</td>
                                     <td>@careerHistory.Appearances</td>
                                     <td>@careerHistory.Goals</td>
+                                    <td>
+                                        <a href=@($"careerHistory/edit/{careerHistory.Id}")>Edit</a> |
+                                        <a href=@($"careerHistory/delete/{careerHistory.Id}")>Delete</a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
-                    </table>                    
+                    </table>
                 }
                 else
                 {
                     <p class="card-text">Player has no career history information yet.</p>
-                }                
+                }
+
+                <div class="d-flex justify-content-center mt-3">
+                    <div class="text-center justify-content-between w-25">
+                        <a href="/careerHistory/create">Add new Career History Item</a>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <div class="d-flex justify-content-center mt-3">
             <div class="text-center justify-content-between w-25">
-                <a href=@($"/player/edit/{PlayerId}") class="btn btn-outline-primary">Edit Player Details</a>
-                <a href=@($"/player/delete/{PlayerId}") class="btn btn-outline-primary">Delete Player</a> 
+                <a href=@($"/player/edit/{PlayerId}") class="btn btn-info">Edit Player Details</a>
+                <a href=@($"/player/delete/{PlayerId}") class="btn btn-danger">Delete Player</a> 
                 <hr/>
                 <a href="/player">Back to Player Index</a>
+                <br />
             </div>
         </div>
 

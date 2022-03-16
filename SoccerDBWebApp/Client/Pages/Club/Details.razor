@@ -11,23 +11,25 @@
 @if(club != null)
 {
     <div class="container">
-        <div class="card">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
             <div class="card-header d-flex justify-content-between">
                 <span>Club Details</span>
             </div>
-            <div class="card-body">
+            <div class="row">
+            <div class="card-body col-md-6">
                 <img src="@club.ClubLogoImage" alt="@club.Name photo" />
             </div>
-            <div class="card-body">
+            <div class="card-body col-md-6">
                 <p class="card-text">Location: @club.City, @club.Country</p>
                 <p class="card-text">Stadium: @club.StadiumName</p>
                 <p class="card-text">Manager: @club.Manager</p>
+            </div>
             </div>
         </div>
 
         <br />
 
-        <div class="card">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
             <div class="card-header d-flex justify-content-between">
                 <span>Current Players</span>
             </div>
@@ -68,7 +70,7 @@
 
         <br />
 
-        <div class="card">
+        <div class="card shadow p-3 mb-5 bg-body rounded">
             <div class="card-header d-flex justify-content-between">
                 <span>Former Players</span>
             </div>
@@ -109,10 +111,11 @@
 
         <div class="d-flex justify-content-center mt-3">
             <div class="text-center justify-content-between w-25">
-                <a href=@($"/club/edit/{ClubId}") class="btn btn-outline-primary">Edit Club Information</a>
-                <a href=@($"/club/delete/{ClubId}") class="btn btn-outline-primary">Delete Club</a> 
+                <a href=@($"/club/edit/{ClubId}") class="btn btn-info">Edit Club Information</a>
+                <a href=@($"/club/delete/{ClubId}") class="btn btn-danger">Delete Club</a> 
                 <hr/>
                 <a href="/club">Back to Club Index</a>
+                <br />
             </div>
         </div>
     </div>
