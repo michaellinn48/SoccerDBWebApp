@@ -1,0 +1,75 @@
+﻿@page "/league/delete/{LeagueId:int}"
+@using SoccerDBWebApp.Shared.Models.League
+@attribute [Authorize]
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>Delete League</h3>
+
+@if(errorMessage != null)
+{
+    <h2 class="text-danger">@errorMessage</h2>
+}
+
+@if(league != null)
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>@league.Name</span>
+            </div>
+            <div class="card-body">
+                <img src="@league.LeagueLogoImage" alt="@league.Name photo" />
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">League Info</h4>
+                <p class="card-text">@league.Country</p>
+                <p class="card-text">@league.TierLevel</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-25">
+                <a href=@($"/league/delete/{LeagueId}") @onclick="HandleClick" class="btn btn-outline-danger"> Delete</a> 
+                <hr/>
+                <a href="/league">Back to League Index</a>
+            </div>
+        </div>
+    </div>
+    
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+
+    [Parameter]
+
+    public int LeagueId { get; set; }
+
+    private LeagueDetail league { get; set; }
+
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        league = await http.GetFromJsonAsync<LeagueDetail>($"/api/league/{LeagueId}");
+    }
+
+    private async void HandleClick()
+    {
+        var deleteResult = await http.DeleteAsync($"/api/league/delete/{LeagueId}");
+
+        if(deleteResult.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/league");
+        }
+        else
+        {
+            errorMessage = "Failed to delete league at this time.";
+        }
+    }
+
+
+}

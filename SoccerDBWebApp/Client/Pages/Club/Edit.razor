@@ -1,0 +1,92 @@
+﻿@page "/club/edit/{ClubId:int}"
+@using SoccerDBWebApp.Shared.Models.Club
+@attribute [Authorize]
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>Edit Club: @model.Name</h3>
+
+@if(errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+
+}
+
+@if (model != null)
+{
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label>Name</label>
+                <InputText class="form-control" @bind-Value="model.Name" />
+            </div>
+            <div class="form-group">
+                <label>City</label>
+                <InputText class="form-control" @bind-Value="model.City" />
+            </div>
+            <div class="form-group">
+                <label>Country</label>
+                <InputText class="form-control" @bind-Value="model.Country" />
+            </div>
+            <div class="form-group">
+                <label>Stadium Name</label>
+                <InputText class="form-control" @bind-Value="model.StadiumName" />
+            </div>
+            <div class="form-group">
+                <label>Manager</label>
+                <InputText class="form-control" @bind-Value="model.Manager" />
+            </div>
+            <div class="form-group">
+                <label>Club Logo Image Url</label>
+                <InputText class="form-control" @bind-Value="model.ClubLogoImage" />
+            </div>
+            <div class="form-group">
+                <label>League Id</label>
+                <InputNumber class="form-control" @bind-Value="model.LeagueId" />
+            </div>
+
+
+
+            <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+
+
+        </EditForm>
+
+    </div>
+    
+}
+
+@code {
+
+    [Parameter]
+
+    public int ClubId { get; set; }
+
+    private ClubUpdate model = new();
+
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        model = await http.GetFromJsonAsync<ClubUpdate>($"/api/club/{ClubId}");
+
+    }
+
+    private async void HandleSubmit()
+    {
+        var editResult = await http.PutAsJsonAsync<ClubUpdate>($"/api/club/edit/{ClubId}", model);
+
+        if (editResult.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo($"/club/{ClubId}");
+        }
+        else
+        {
+            errorMessage = "Could not edit club at this time. Please try again later.";
+        }
+    }
+
+}

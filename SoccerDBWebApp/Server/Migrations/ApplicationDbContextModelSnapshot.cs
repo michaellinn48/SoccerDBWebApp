@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SoccerDBWebApp.Server.Data;
 
-namespace SoccerDBWebApp.Server.Data.Migrations
+namespace SoccerDBWebApp.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -324,12 +324,15 @@ namespace SoccerDBWebApp.Server.Data.Migrations
 
             modelBuilder.Entity("SoccerDBWebApp.Server.Models.CareerHistory", b =>
                 {
-                    b.Property<int>("CareerHistoryId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Appearances")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClubId")
                         .HasColumnType("int");
 
                     b.Property<string>("ClubName")
@@ -345,6 +348,9 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<bool>("IsCurrentlyPlayingFor")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PlayerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -352,14 +358,18 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<string>("StartYear")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CareerHistoryId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClubId");
+
+                    b.HasIndex("PlayerId");
 
                     b.ToTable("CareerHistorys");
                 });
 
             modelBuilder.Entity("SoccerDBWebApp.Server.Models.Club", b =>
                 {
-                    b.Property<int>("ClubId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -373,6 +383,9 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("LeagueId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Manager")
                         .HasColumnType("nvarchar(max)");
 
@@ -383,14 +396,16 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<string>("StadiumName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ClubId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("LeagueId");
 
                     b.ToTable("Clubs");
                 });
 
             modelBuilder.Entity("SoccerDBWebApp.Server.Models.League", b =>
                 {
-                    b.Property<int>("LeagueId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -408,14 +423,14 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<int>("TierLevel")
                         .HasColumnType("int");
 
-                    b.HasKey("LeagueId");
+                    b.HasKey("Id");
 
                     b.ToTable("Leagues");
                 });
 
             modelBuilder.Entity("SoccerDBWebApp.Server.Models.Player", b =>
                 {
-                    b.Property<int>("PlayerId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -436,7 +451,7 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<string>("Positions")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PlayerId");
+                    b.HasKey("Id");
 
                     b.ToTable("Players");
                 });
@@ -490,6 +505,39 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SoccerDBWebApp.Server.Models.CareerHistory", b =>
+                {
+                    b.HasOne("SoccerDBWebApp.Server.Models.Club", null)
+                        .WithMany("CareerHistorys")
+                        .HasForeignKey("ClubId");
+
+                    b.HasOne("SoccerDBWebApp.Server.Models.Player", null)
+                        .WithMany("CareerHistorys")
+                        .HasForeignKey("PlayerId");
+                });
+
+            modelBuilder.Entity("SoccerDBWebApp.Server.Models.Club", b =>
+                {
+                    b.HasOne("SoccerDBWebApp.Server.Models.League", null)
+                        .WithMany("Clubs")
+                        .HasForeignKey("LeagueId");
+                });
+
+            modelBuilder.Entity("SoccerDBWebApp.Server.Models.Club", b =>
+                {
+                    b.Navigation("CareerHistorys");
+                });
+
+            modelBuilder.Entity("SoccerDBWebApp.Server.Models.League", b =>
+                {
+                    b.Navigation("Clubs");
+                });
+
+            modelBuilder.Entity("SoccerDBWebApp.Server.Models.Player", b =>
+                {
+                    b.Navigation("CareerHistorys");
                 });
 #pragma warning restore 612, 618
         }

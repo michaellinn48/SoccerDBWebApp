@@ -1,0 +1,76 @@
+﻿@page "/player/delete/{PlayerId:int}"
+@using SoccerDBWebApp.Shared.Models.Player
+@attribute [Authorize]
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>Delete Player</h3>
+
+@if(errorMessage != null)
+{
+    <h2 class="text-danger">@errorMessage</h2>
+}
+
+@if(player != null)
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>@player.Name</span>
+            </div>
+            <div class="card-body">
+                <img src="@player.PlayerImage" alt="@player.Name photo" />
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Player Info</h4>
+                <p class="card-text">@player.Age</p>
+                <p class="card-text">@player.Height</p>
+                <p class="card-text">@player.Positions</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-25">
+                <a href=@($"/player/delete/{PlayerId}") @onclick="HandleClick" class="btn btn-outline-danger"> Delete</a> 
+                <hr/>
+                <a href="/player">Back to Player Index</a>
+            </div>
+        </div>
+    </div>
+    
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+
+    [Parameter]
+
+    public int PlayerId { get; set; }
+
+    private PlayerDetail player { get; set; }
+
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        player = await http.GetFromJsonAsync<PlayerDetail>($"/api/player/{PlayerId}");
+    }
+
+    private async void HandleClick()
+    {
+        var deleteResult = await http.DeleteAsync($"/api/player/delete/{PlayerId}");
+
+        if(deleteResult.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/player");
+        }
+        else
+        {
+            errorMessage = "Failed to delete player at this time.";
+        }
+    }
+
+
+}

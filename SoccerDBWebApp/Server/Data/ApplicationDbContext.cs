@@ -17,5 +17,11 @@ namespace SoccerDBWebApp.Server.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+
+        public DbSet<Player> Players { get; set; }
+        public DbSet<CareerHistory> CareerHistorys { get; set; }
+        public DbSet<Club> Clubs { get; set; }
+        public DbSet<League> Leagues { get; set; }
+
     }
 }

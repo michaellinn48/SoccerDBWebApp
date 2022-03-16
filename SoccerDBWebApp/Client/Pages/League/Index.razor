@@ -1,0 +1,49 @@
+﻿@page "/league"
+@using SoccerDBWebApp.Shared.Models.League
+@inject HttpClient http
+@attribute [Authorize]
+
+<h3>Leagues</h3>
+
+<a href="/league/create">Add a new league</a>
+
+@if (leagues != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (LeagueListItem league in leagues)
+            {
+                <tr>
+                    <td>@league.Id</td>
+                    <td>@league.Name</td>
+                    <td>
+                        <a href=@($"league/{league.Id}")>Details</a>
+                        <a href=@($"league/edit/{league.Id}")>Edit</a>
+                        <a href=@($"league/delete/{league.Id}")>Delete</a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>    
+}
+
+@code 
+{
+    private List<LeagueListItem> leagues;
+
+    protected override async Task OnInitializedAsync()
+    {
+        leagues = await http.GetFromJsonAsync<List<LeagueListItem>>("/api/league");
+    }
+}

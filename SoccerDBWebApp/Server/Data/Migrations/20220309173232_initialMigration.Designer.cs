@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SoccerDBWebApp.Server.Data;
 
 namespace SoccerDBWebApp.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220309173232_initialMigration")]
+    partial class initialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,7 +326,7 @@ namespace SoccerDBWebApp.Server.Data.Migrations
 
             modelBuilder.Entity("SoccerDBWebApp.Server.Models.CareerHistory", b =>
                 {
-                    b.Property<int>("CareerHistoryId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -332,9 +334,8 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<int>("Appearances")
                         .HasColumnType("int");
 
-                    b.Property<string>("ClubName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ClubId")
+                        .HasColumnType("int");
 
                     b.Property<string>("EndYear")
                         .HasColumnType("nvarchar(max)");
@@ -345,21 +346,24 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<bool>("IsCurrentlyPlayingFor")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PlayerName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("StartYear")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CareerHistoryId");
+                    b.HasKey("Id");
 
-                    b.ToTable("CareerHistorys");
+                    b.ToTable("CareerHistories");
                 });
 
             modelBuilder.Entity("SoccerDBWebApp.Server.Models.Club", b =>
                 {
-                    b.Property<int>("ClubId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -373,6 +377,9 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("LeagueId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Manager")
                         .HasColumnType("nvarchar(max)");
 
@@ -383,14 +390,14 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<string>("StadiumName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ClubId");
+                    b.HasKey("Id");
 
                     b.ToTable("Clubs");
                 });
 
             modelBuilder.Entity("SoccerDBWebApp.Server.Models.League", b =>
                 {
-                    b.Property<int>("LeagueId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -408,20 +415,23 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<int>("TierLevel")
                         .HasColumnType("int");
 
-                    b.HasKey("LeagueId");
+                    b.HasKey("Id");
 
                     b.ToTable("Leagues");
                 });
 
             modelBuilder.Entity("SoccerDBWebApp.Server.Models.Player", b =>
                 {
-                    b.Property<int>("PlayerId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Birthdate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Height")
                         .HasColumnType("nvarchar(max)");
@@ -436,7 +446,7 @@ namespace SoccerDBWebApp.Server.Data.Migrations
                     b.Property<string>("Positions")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PlayerId");
+                    b.HasKey("Id");
 
                     b.ToTable("Players");
                 });

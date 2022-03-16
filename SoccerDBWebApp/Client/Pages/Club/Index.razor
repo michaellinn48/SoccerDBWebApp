@@ -1,0 +1,49 @@
+﻿@page "/club"
+@using SoccerDBWebApp.Shared.Models.Club
+@inject HttpClient http
+@attribute [Authorize]
+
+<h3>Clubs</h3>
+
+<a href="/club/create">Add a new club</a>
+
+@if (clubs != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ClubListItem club in clubs)
+            {
+                <tr>
+                    <td>@club.Id</td>
+                    <td>@club.Name</td>
+                    <td>
+                        <a href=@($"club/{club.Id}")>Details</a>
+                        <a href=@($"club/edit/{club.Id}")>Edit</a>
+                        <a href=@($"club/delete/{club.Id}")>Delete</a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>    
+}
+
+@code 
+{
+    private List<ClubListItem> clubs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        clubs = await http.GetFromJsonAsync<List<ClubListItem>>("/api/club");
+    }
+}

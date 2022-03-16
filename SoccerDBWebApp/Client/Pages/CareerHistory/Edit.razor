@@ -1,0 +1,109 @@
+﻿@page "/careerHistory/edit/{CareerHistoryId:int}"
+@using SoccerDBWebApp.Shared.Models.CareerHistory
+@attribute [Authorize]
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>Edit Career History Item</h3>
+
+@if (errorMessage == null)
+{
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label>Player Name</label>
+                <InputText class="form-control" @bind-Value="model.PlayerName" />
+            </div>
+            <div class="form-group">
+                <label>Club Name</label>
+                <InputText class="form-control" @bind-Value="model.ClubName" />
+            </div>
+            <div class="form-group">
+                <label>Is player currently playing for this club? (Check box if yes)</label>
+                <InputCheckbox class="form-control" @bind-Value="model.IsCurrentlyPlayingFor" />
+            </div>
+            <div class="form-group">
+                <label>Start Year</label>
+                <InputText class="form-control" @bind-Value="model.StartYear" />
+            </div>
+
+            @if (model.IsCurrentlyPlayingFor == true)
+            {
+                model.EndYear = "Present";
+            }
+            else
+            {
+                <div class="form-group">
+                    <label>End Year</label>
+                    <InputText class="form-control" @bind-Value="model.EndYear" />
+                </div>
+            }
+
+            <div class="form-group">
+                <label>Appearances</label>
+                <InputNumber class="form-control" @bind-Value="model.Appearances" />
+            </div>
+            <div class="form-group">
+                <label>Goals</label>
+                <InputNumber class="form-control" @bind-Value="model.Goals" />
+            </div>
+            <div class="form-group">
+                <label>Player Id</label>
+                <InputNumber class="form-control" @bind-Value="model.PlayerId" />
+            </div>
+            <div class="form-group">
+                <label>Club Id</label>
+                <InputNumber class="form-control" @bind-Value="model.ClubId" />
+            </div>
+
+
+
+            <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+
+
+        </EditForm>
+
+    </div>
+
+}
+else
+{
+    <h5 class="text-danger">@errorMessage</h5>
+
+}
+
+
+@code {
+
+    [Parameter]
+
+    public int CareerHistoryId { get; set; }
+
+    private CareerHistoryUpdate model = new();
+
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        model = await http.GetFromJsonAsync<CareerHistoryUpdate>($"/api/careerHistory/{CareerHistoryId}");
+
+    }
+
+    private async void HandleSubmit()
+    {
+        var editResult = await http.PutAsJsonAsync<CareerHistoryUpdate>($"/api/careerHistory/edit/{CareerHistoryId}", model);
+
+        if (editResult.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo($"/careerHistory/{CareerHistoryId}");
+        }
+        else
+        {
+            errorMessage = "Could not edit careerHistory at this time. Please try again later.";
+        }
+    }
+
+}

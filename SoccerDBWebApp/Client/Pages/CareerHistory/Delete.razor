@@ -1,0 +1,77 @@
+﻿@page "/careerHistory/delete/{CareerHistoryId:int}"
+@using SoccerDBWebApp.Shared.Models.CareerHistory
+@attribute [Authorize]
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>Delete Career History Item</h3>
+
+@if(errorMessage != null)
+{
+    <h2 class="text-danger">@errorMessage</h2>
+}
+
+@if(careerHistory != null)
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>@careerHistory.PlayerName</span>
+            </div>
+            
+            <div class="card-body">
+                <h4 class="card-title">Career History Info</h4>
+                <p class="card-text">@careerHistory.ClubName</p>
+                <p class="card-text">@careerHistory.IsCurrentlyPlayingFor</p>
+                <p class="card-text">@careerHistory.StartYear</p>
+                <p class="card-text">@careerHistory.EndYear</p>
+                <p class="card-text">@careerHistory.Appearances</p>
+                <p class="card-text">@careerHistory.Goals</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-25">
+                <a href=@($"/careerHistory/delete/{CareerHistoryId}") @onclick="HandleClick" class="btn btn-outline-danger"> Delete</a> 
+                <hr/>
+                <a href="/careerHistory">Back to Career History Index</a>
+            </div>
+        </div>
+    </div>
+    
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+
+    [Parameter]
+
+    public int CareerHistoryId { get; set; }
+
+    private CareerHistoryDetail careerHistory { get; set; }
+
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        careerHistory = await http.GetFromJsonAsync<CareerHistoryDetail>($"/api/careerHistory/{CareerHistoryId}");
+    }
+
+    private async void HandleClick()
+    {
+        var deleteResult = await http.DeleteAsync($"/api/careerHistory/delete/{CareerHistoryId}");
+
+        if(deleteResult.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/careerHistory");
+        }
+        else
+        {
+            errorMessage = "Failed to delete career history at this time.";
+        }
+    }
+
+
+}

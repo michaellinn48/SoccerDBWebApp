@@ -1,0 +1,53 @@
+﻿@page "/careerHistory"
+@using SoccerDBWebApp.Shared.Models.CareerHistory
+@inject HttpClient http
+@attribute [Authorize]
+
+<h3>Career History Items</h3>
+
+<a href="/careerHistory/create">Add a new Career History Item</a>
+
+@if (careerHistorys != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Player Name</th>
+                <th>Club Name</th>
+                <th>Current Club?</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (CareerHistoryListItem careerHistory in careerHistorys)
+            {
+                <tr>
+                    <td>@careerHistory.Id</td>
+                    <td>@careerHistory.PlayerName</td>
+                    <td>@careerHistory.ClubName</td>
+                    <td>@careerHistory.IsCurrentlyPlayingFor</td>
+                    <td>
+                        <a href=@($"careerHistory/{careerHistory.Id}")>Details</a>
+                        <a href=@($"careerHistory/edit/{careerHistory.Id}")>Edit</a>
+                        <a href=@($"careerHistory/delete/{careerHistory.Id}")>Delete</a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>    
+}
+
+@code 
+{
+    private List<CareerHistoryListItem> careerHistorys;
+
+    protected override async Task OnInitializedAsync()
+    {
+        careerHistorys = await http.GetFromJsonAsync<List<CareerHistoryListItem>>("/api/careerHistory");
+    }
+}

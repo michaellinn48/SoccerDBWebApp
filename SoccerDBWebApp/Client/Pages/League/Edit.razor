@@ -1,0 +1,81 @@
+﻿@page "/league/edit/{LeagueId:int}"
+@using SoccerDBWebApp.Shared.Models.League
+@attribute [Authorize]
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>Edit League: @model.Name</h3>
+
+@if(errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+
+}
+
+@if (model != null)
+{
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label>Name</label>
+                <InputText class="form-control" @bind-Value="model.Name" />
+            </div>
+            <div class="form-group">
+                <label>Country</label>
+                <InputText class="form-control" @bind-Value="model.Country" />
+            </div>
+            <div class="form-group">
+                <label>League's Domestic Tier Level</label>
+                <InputNumber class="form-control" @bind-Value="model.TierLevel" />
+            </div>
+            <div class="form-group">
+                <label>League Logo Image Url</label>
+                <InputText class="form-control" @bind-Value="model.LeagueLogoImage" />
+            </div>
+            
+
+
+
+            <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+
+
+        </EditForm>
+
+    </div>
+    
+}
+
+@code {
+
+    [Parameter]
+
+    public int LeagueId { get; set; }
+
+    private LeagueUpdate model = new();
+
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        model = await http.GetFromJsonAsync<LeagueUpdate>($"/api/league/{LeagueId}");
+
+    }
+
+    private async void HandleSubmit()
+    {
+        var editResult = await http.PutAsJsonAsync<LeagueUpdate>($"/api/league/edit/{LeagueId}", model);
+
+        if (editResult.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo($"/league/{LeagueId}");
+        }
+        else
+        {
+            errorMessage = "Could not edit league at this time. Please try again later.";
+        }
+    }
+
+}

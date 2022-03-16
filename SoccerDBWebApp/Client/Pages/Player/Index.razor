@@ -1,0 +1,49 @@
+﻿@page "/player"
+@using SoccerDBWebApp.Shared.Models.Player
+@inject HttpClient http
+@attribute [Authorize]
+
+<h3>Players</h3>
+
+<a href="/player/create">Add a new player</a>
+
+@if (players != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (PlayerListItem player in players)
+            {
+                <tr>
+                    <td>@player.Id</td>
+                    <td>@player.Name</td>
+                    <td>
+                        <a href=@($"player/{player.Id}")>Details</a>
+                        <a href=@($"player/edit/{player.Id}")>Edit</a>
+                        <a href=@($"player/delete/{player.Id}")>Delete</a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>    
+}
+
+@code 
+{
+    private List<PlayerListItem> players;
+
+    protected override async Task OnInitializedAsync()
+    {
+        players = await http.GetFromJsonAsync<List<PlayerListItem>>("/api/player");
+    }
+}

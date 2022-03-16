@@ -1,0 +1,97 @@
+﻿@page "/player/{PlayerId:int}"
+@using SoccerDBWebApp.Shared.Models.Player
+@attribute [Authorize]
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h2>@player.Name</h2>
+
+<br />
+
+@if(player != null)
+{
+    <div class="container">
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>Personal Details</span>
+            </div>
+            <div class="card-body">
+                <img src="@player.PlayerImage" alt="@player.Name photo" style="width: 280px; height: 280px" />
+            </div>
+            <div class="card-body">
+                <p class="card-text">Age: @player.Age</p>
+                <p class="card-text">Height: @player.Height</p>
+                <p class="card-text">Positions: @player.Positions</p>
+            </div>
+        </div>
+
+        <br />
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>Career History</span>
+            </div>            
+            <div class="card-body">
+                @if (player.CareerHistorys != null)
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Club</th>
+                                <th>Years</th>
+                                <th>Appearances</th>
+                                <th>Goals</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var careerHistory in @player.CareerHistorys)
+                            {
+                                <tr>
+                                    <td><a href=@($"club/{careerHistory.ClubId}")>@careerHistory.ClubName</a></td>
+                                    <td>@careerHistory.StartYear - @careerHistory.EndYear</td>
+                                    <td>@careerHistory.Appearances</td>
+                                    <td>@careerHistory.Goals</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>                    
+                }
+                else
+                {
+                    <p class="card-text">Player has no career history information yet.</p>
+                }                
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-25">
+                <a href=@($"/player/edit/{PlayerId}") class="btn btn-outline-primary">Edit Player Details</a>
+                <a href=@($"/player/delete/{PlayerId}") class="btn btn-outline-primary">Delete Player</a> 
+                <hr/>
+                <a href="/player">Back to Player Index</a>
+            </div>
+        </div>
+
+    </div>
+    
+}
+else
+{
+    <p>Loading...</p>
+}
+
+
+@code {
+
+    [Parameter]
+
+    public int PlayerId { get; set; }
+
+    private PlayerDetail player = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        player = await http.GetFromJsonAsync<PlayerDetail>($"/api/player/{PlayerId}");        
+    }
+}

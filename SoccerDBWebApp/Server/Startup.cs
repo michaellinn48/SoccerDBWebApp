@@ -9,6 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SoccerDBWebApp.Server.Data;
 using SoccerDBWebApp.Server.Models;
+using SoccerDBWebApp.Server.Services.CareerHistoryServices;
+using SoccerDBWebApp.Server.Services.ClubServices;
+using SoccerDBWebApp.Server.Services.LeagueServices;
+using SoccerDBWebApp.Server.Services.PlayerServices;
 using System.Linq;
 
 namespace SoccerDBWebApp.Server
@@ -29,6 +33,13 @@ namespace SoccerDBWebApp.Server
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IPlayerService, PlayerService>();
+            services.AddScoped<IClubService, ClubService>();
+            services.AddScoped<ILeagueService, LeagueService>();
+            services.AddScoped<ICareerHistoryService, CareerHistoryService>();
+
+
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 

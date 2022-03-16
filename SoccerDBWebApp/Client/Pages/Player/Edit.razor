@@ -1,0 +1,84 @@
+﻿@page "/player/edit/{PlayerId:int}"
+@using SoccerDBWebApp.Shared.Models.Player
+@attribute [Authorize]
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>Edit Player: @model.Name</h3>
+
+@if(errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+
+}
+
+@if (model != null)
+{
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label>Name</label>
+                <InputText class="form-control" @bind-Value="model.Name" />
+            </div>
+            <div class="form-group">
+                <label>Age</label>
+                <InputNumber class="form-control" @bind-Value="model.Age" />
+            </div>
+            <div class="form-group">
+                <label>Height</label>
+                <InputText class="form-control" @bind-Value="model.Height" />
+            </div>
+            <div class="form-group">
+                <label>Positions</label>
+                <InputText class="form-control" @bind-Value="model.Positions" />
+            </div>
+            <div class="form-group">
+                <label>Player Image Url</label>
+                <InputText class="form-control" @bind-Value="model.PlayerImage" />
+            </div>
+
+
+
+            <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+
+
+        </EditForm>
+
+    </div>
+    
+}
+
+@code {
+
+    [Parameter]
+
+    public int PlayerId { get; set; }
+
+    private PlayerUpdate model = new();
+
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        model = await http.GetFromJsonAsync<PlayerUpdate>($"/api/player/{PlayerId}");
+
+    }
+
+    private async void HandleSubmit()
+    {
+        var editResult = await http.PutAsJsonAsync<PlayerUpdate>($"/api/player/edit/{PlayerId}", model);
+
+        if (editResult.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo($"/player/{PlayerId}");
+        }
+        else
+        {
+            errorMessage = "Could not edit player at this time. Please try again later.";
+        }
+    }
+
+}

@@ -1,0 +1,64 @@
+﻿@page "/careerHistory/create"
+@using SoccerDBWebApp.Shared.Models.CareerHistory
+@attribute [Authorize]
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>Create a Career History</h3>
+
+@if(errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+
+}
+else
+{
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="form-group">
+                <label>Player Name</label>
+                <InputText class="form-control" @bind-Value="model.PlayerName"/>
+            </div>
+            <div class="form-group">
+                <label>Club Name</label>
+                <InputText class="form-control" @bind-Value="model.ClubName"/>
+            </div>
+            <div class="form-group">
+                <label>Is player currently playing for this club? (Check box if yes)</label>
+                <InputCheckbox class="form-control" @bind-Value="model.IsCurrentlyPlayingFor" />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+
+
+        </EditForm>
+
+    </div>
+    
+}
+
+@code {
+
+    private CareerHistoryCreate model = new();
+
+    private string errorMessage;
+
+    private async void HandleSubmit()
+    {
+        var createResult = await http.PostAsJsonAsync<CareerHistoryCreate>("/api/careerHistory/create", model);
+
+        if (createResult.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/careerHistory");
+
+        }
+        else
+        {
+            errorMessage = "Could not create careerHistory at this time. Please try again later.";
+
+        }
+
+    }
+}
